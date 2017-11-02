@@ -3,13 +3,13 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync'),
     autoprefixer = require('gulp-autoprefixer'),
     uglify = require('gulp-uglify'),
-    jshint = require('gulp-jshint'),
     header  = require('gulp-header'),
     rename = require('gulp-rename'),
     cssnano = require('gulp-cssnano'),
     ghPages = require('gulp-gh-pages'),
     sourcemaps = require('gulp-sourcemaps'),
-    package = require('./package.json');
+    package = require('./package.json'),
+    eslint = require('gulp-eslint');
 
 
 var banner = [
@@ -24,7 +24,7 @@ var banner = [
   '\n'
 ].join('');
 
-gulp.task('css', function () {
+gulp.task('sass', function () {
     return gulp.src('src/sass/global.sass')
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
@@ -70,8 +70,15 @@ gulp.task('ghpages', function() {
     .pipe(ghPages());
 });
 
-gulp.task('default', ['css', 'js', 'browser-sync'], function () {
-    gulp.watch("src/sass/**/*.sass", ['css']);
+gulp.task('lint', () => {
+    return gulp.src(['**/*.js', '!node_modules/**'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
+
+gulp.task('default', ['sass', 'js', 'eslint', 'browser-sync'], function () {
+    gulp.watch("src/sass/**/*.sass", ['sass']);
     gulp.watch("src/js/*.js", ['js']);
     gulp.watch("app/*.html", ['bs-reload']);
 });
