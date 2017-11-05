@@ -1,5 +1,4 @@
 var gulp = require('gulp'),
-    sass = require('gulp-sass'),
     browserSync = require('browser-sync'),
     autoprefixer = require('gulp-autoprefixer'),
     uglify = require('gulp-uglify'),
@@ -8,45 +7,25 @@ var gulp = require('gulp'),
     cssnano = require('gulp-cssnano'),
     ghPages = require('gulp-gh-pages'),
     sourcemaps = require('gulp-sourcemaps'),
-    package = require('./package.json'),
+    stylus = require('gulp-stylus'),
     eslint = require('gulp-eslint');
 
-
-var banner = [
-  '/*!\n' +
-  ' * <%= package.name %>\n' +
-  ' * <%= package.title %>\n' +
-  ' * <%= package.url %>\n' +
-  ' * @author <%= package.author %>\n' +
-  ' * @version <%= package.version %>\n' +
-  ' * Copyright ' + new Date().getFullYear() + '. <%= package.license %> licensed.\n' +
-  ' */',
-  '\n'
-].join('');
-
-gulp.task('sass', function () {
-    return gulp.src('src/sass/global.sass')
+gulp.task('stylus', function () {
+    return gulp.src('src/stylus/global.styl')
     .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(autoprefixer('last 4 version'))
-    .pipe(gulp.dest('app/assets/css'))
-    .pipe(cssnano())
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(header(banner, { package : package }))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('app/assets/css'))
-    .pipe(browserSync.reload({stream:true}));
+    .pipe(stylus())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('app/assets/css'));
 });
 
 gulp.task('js',function(){
   gulp.src('src/js/scripts.js')
     .pipe(sourcemaps.init())
-    .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter('default'))
-    .pipe(header(banner, { package : package }))
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError())
     .pipe(gulp.dest('app/assets/js'))
     .pipe(uglify())
-    .pipe(header(banner, { package : package }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('app/assets/js'))
@@ -77,8 +56,8 @@ gulp.task('lint', () => {
         .pipe(eslint.failAfterError());
 });
 
-gulp.task('default', ['sass', 'js', 'eslint', 'browser-sync'], function () {
-    gulp.watch("src/sass/**/*.sass", ['sass']);
+gulp.task('default', ['stylus', 'js', 'lint', 'browser-sync'], function () {
+    gulp.watch("src/stylus/**/*.styl", ['styl']);
     gulp.watch("src/js/*.js", ['js']);
     gulp.watch("app/*.html", ['bs-reload']);
 });
