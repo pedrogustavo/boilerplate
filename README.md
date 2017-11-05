@@ -1,21 +1,18 @@
 # Boilerplate
-> Boilerplate front-end for development using HTML, SASS, Bootstrap and Gulp
-
-This boilerplate was inspired by [FastShell](https://hosseinkarami.com/fastshell/).
+> Boilerplate front-end for development using HTML, Stylus and Gulp
 
 This boilerplate was created with the aim of speeding up the development of HTML projects. Just clone the repository and install its dependencies using `npm i`.
 
 
 **Tools used:**
 - Gulp
-- Sass
-- Bootstrap
+- Stylus
 
 ## Tasks
 Here are the list of available gulp tasks:
 
 
-Default
+Default (For run all tasks)
 ```
 gulp
 ```
@@ -23,7 +20,7 @@ gulp
 
 Just compile the sass in css
 ```
-gulp css
+gulp stylus
 ```
 
 
