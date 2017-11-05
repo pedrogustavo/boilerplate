@@ -1,7 +1,6 @@
 # Boilerplate
 # @author Pedro Gustavo
 
-
 ## Node.js
 lib-cov
 *.seed
@@ -40,3 +39,5 @@ $RECYCLE.BIN/
 
 ## Gulp
 .publish
+app/assets/css
+app/assets/js
