@@ -8,14 +8,21 @@ var gulp = require('gulp'),
     ghPages = require('gulp-gh-pages'),
     sourcemaps = require('gulp-sourcemaps'),
     stylus = require('gulp-stylus'),
-    eslint = require('gulp-eslint');
+    eslint = require('gulp-eslint'),
+    notify = require('gulp-notify');
 
 gulp.task('stylus', function () {
     return gulp.src('src/stylus/global.styl')
     .pipe(sourcemaps.init())
     .pipe(stylus())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('app/assets/css'));
+    .pipe(gulp.dest('app/assets/css'))
+    .pipe(cssnano())
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('app/assets/css'))
+    .pipe(browserSync.reload({ stream: true }))
+    
+    .pipe(notify("Css is ready!"));
 });
 
 gulp.task('js',function(){
@@ -57,7 +64,8 @@ gulp.task('lint', () => {
 });
 
 gulp.task('default', ['stylus', 'js', 'lint', 'browser-sync'], function () {
-    gulp.watch("src/stylus/**/*.styl", ['styl']);
+    gulp.watch("src/stylus/**/*.styl", ['stylus']);
     gulp.watch("src/js/*.js", ['js']);
+    gulp.watch("**/*.js", ['lint']);
     gulp.watch("app/*.html", ['bs-reload']);
 });
